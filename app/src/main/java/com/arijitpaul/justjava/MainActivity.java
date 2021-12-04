@@ -28,17 +28,18 @@ import androidx.appcompat.app.AppCompatActivity;
         // This method is called when the order button is clicked
         public void submitOrder(View view) {
 
-            EditText nameField = (EditText) findViewById(R.id.name_field);
+            EditText nameField = findViewById(R.id.name_field);
             String name = nameField.getText().toString();
 
-            CheckBox whippedCreamCheckBox = (CheckBox) findViewById(R.id.whipped_cream_checkbox);
+            CheckBox whippedCreamCheckBox = findViewById(R.id.whipped_cream_checkbox);
             boolean hasWhippedCream = whippedCreamCheckBox.isChecked();
 
-            CheckBox chocolateCheckBox = (CheckBox) findViewById(R.id.chocolate_checkbox);
+            CheckBox chocolateCheckBox = findViewById(R.id.chocolate_checkbox);
             boolean hasChocolate = chocolateCheckBox.isChecked();
 
             int price = calculatePrice(hasWhippedCream, hasChocolate);
-            String priceMessage = createOrderSummary(name, price, hasWhippedCream, hasChocolate);
+            if(!name.equals("")) {
+                String priceMessage = createOrderSummary(name, price, hasWhippedCream, hasChocolate);
 
                 Intent intent = new Intent(Intent.ACTION_SENDTO);
                 intent.setData(Uri.parse("mailto:")); // only email apps should handle this
@@ -48,6 +49,8 @@ import androidx.appcompat.app.AppCompatActivity;
                 if (intent.resolveActivity(getPackageManager()) != null) {
                     startActivity(intent);
                 }
+            } else
+                Toast.makeText(this, "Please set the Name field", Toast.LENGTH_SHORT).show();
         }
 
         // The method is called when the plus button is clicked
@@ -78,7 +81,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
         // This method displays the given quantity value on the screen
         private void displayQuantity(int number) {
-            TextView quantityTextView = (TextView) findViewById(R.id.quantity_text_view);
+            TextView quantityTextView = findViewById(R.id.quantity_text_view);
             quantityTextView.setText("" + number);
         }
 
@@ -95,13 +98,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
         // Creates summary of the order
         private String createOrderSummary(String name, int price, boolean addWhippedCream, boolean addChocolate) {
-            String message = getString(R.string.order_summary_name, name)
-                         + "\n" + getString(R.string.order_summary_whipped_cream, addWhippedCream)
-                         + "\n" + getString(R.string.order_summary_chocolate, addChocolate)
-                         + "\n" + getString(R.string.order_summary_quantity, quantity)
-                         + "\n" + getString(R.string.order_summary_price, price)
-                         + "\n" + getString(R.string.thank_you);
-            return message;
+            return getString(R.string.order_summary_name, name)
+                    + "\n" + getString(R.string.order_summary_whipped_cream, addWhippedCream)
+                    + "\n" + getString(R.string.order_summary_chocolate, addChocolate)
+                    + "\n" + getString(R.string.order_summary_quantity, quantity)
+                    + "\n" + getString(R.string.order_summary_price, price)
+                    + "\n" + getString(R.string.thank_you);
         }
 
     }
